@@ -43,7 +43,7 @@ static void THNN_(SpatialDilatedMaxPooling_updateOutput_frame)(
 
         /* local pointers */
         real *op = output_p  + k*owidth*oheight + i*owidth + j;
-        THIndex_t *indp = ind_p   + k*owidth*oheight + i*owidth + j;
+        THIndex_t *indp = (ind_p)   + k*owidth*oheight + i*owidth + j;
 
         /* compute local max: */
         long maxindex = -1;
@@ -225,7 +225,7 @@ static void THNN_(SpatialDilatedMaxPooling_updateGradInput_frame)(
   {
     real *gradInput_p_k = gradInput_p + k*iwidth*iheight;
     real *gradOutput_p_k = gradOutput_p + k*owidth*oheight;
-    THIndex_t *ind_p_k = ind_p + k*owidth*oheight;
+    THIndex_t *ind_p_k = (ind_p) + k*owidth*oheight;
 
     /* calculate max points */
     long i, j;
@@ -236,7 +236,10 @@ static void THNN_(SpatialDilatedMaxPooling_updateGradInput_frame)(
         /* retrieve position of max */
         long maxp = ind_p_k[i*owidth + j] - TH_INDEX_BASE;
         /* update gradient */
+        //printf("about to gradInput %i %i %i %i\n", maxp, TH_INDEX_BASE, i*owidth +j, ind_p_k[i*owidth+j]);
         gradInput_p_k[maxp] += gradOutput_p_k[i*owidth + j];
+        printf("CPU gradInput: %f\n", gradInput_p_k[maxp]);
+        //printf("done gradInput\n");
       }
     }
   }
@@ -300,6 +303,7 @@ void THNN_(SpatialDilatedMaxPooling_updateGradInput)(
   /* backprop */
   if (input->nDimension == 3)
   {
+    printf("!!CPU nDimension3\n");
     THNN_(SpatialDilatedMaxPooling_updateGradInput_frame)
       (gradInput_data, gradOutput_data,
        indices_data,
