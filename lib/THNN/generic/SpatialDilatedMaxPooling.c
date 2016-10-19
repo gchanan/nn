@@ -3,7 +3,7 @@
 #else
 
 static inline void THNN_(SpatialDilatedMaxPooling_shapeCheck)(
-	THTensor *input, THTensor *gradOutput, THTensor *indices,
+	THTensor *input, THTensor *gradOutput, THIndexTensor *indices,
 	int kH, int kW, int dH, int dW, int padH, int padW,
 	int dilationH, int dilationW, bool ceil_mode) {
 
@@ -235,7 +235,7 @@ void THNN_(SpatialDilatedMaxPooling_updateOutput)(
 
     THTensor_(resize4d)(output, nbatch, nInputPlane, outputHeight, outputWidth);
     /* indices will contain the locations for each output point */
-    THIndexTensor_(resize4d)(indices, nInputPlane, outputHeight, outputWidth);
+    THIndexTensor_(resize4d)(indices, nbatch, nInputPlane, outputHeight, outputWidth);
 
     input_data = THTensor_(data)(input);
     output_data = THTensor_(data)(output);
@@ -278,9 +278,9 @@ static void THNN_(SpatialDilatedMaxPooling_updateGradInput_frame)(
 #pragma omp parallel for private(k)
   for (k = 0; k < nInputPlane; k++)
   {
-    real *gradInput_p_k = gradInput_p + k*iwidth*iheight;
-    real *gradOutput_p_k = gradOutput_p + k*owidth*oheight;
-    THIndex_t *ind_p_k = ind_p + k*owidth*oheight;
+    real *gradInput_p_k = gradInput_p + k*inputWidth*inputHeight;
+    real *gradOutput_p_k = gradOutput_p + k*outputWidth*outputHeight;
+    THIndex_t *ind_p_k = ind_p + k*outputWidth*outputHeight;
 
     /* calculate max points */
     long i, j;
