@@ -40,16 +40,6 @@ static inline void THNN_(VolumetricDilatedConvolution_shapeCheck)(
     dimw++;
   }
 
-  if (ndim == 4) {
-    THArgCheck(input->size[0] == nInputPlane, 2,
-               "input channels and nInputPlane dont match. Expected: %d, got %d",
-               nInputPlane, input->size[0]);
-  } else {
-    THArgCheck(input->size[1] == nInputPlane, 2,
-               "input channels and nInputPlane dont match. Expected: %d, got %d",
-               nInputPlane, input->size[1]);
-  }
-
   long inputDepth  = input->size[dimd];
   long inputHeight  = input->size[dimh];
   long inputWidth   = input->size[dimw];
