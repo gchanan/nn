@@ -83,7 +83,7 @@ static inline void THNN_(VolumetricDilatedMaxPooling_shapeCheck)(
     THError("Given input size: (%dx%dx%dx%d). Calculated output size: (%dx%dx%dx%d). Output size is too small",
             nslices,itime,iheight,iwidth,nslices,otime,oheight,owidth);
 
-   if (gradOutput != NULL) {
+  if (gradOutput != NULL) {
     THNN_CHECK_DIM_SIZE(gradOutput, ndim, dimN, nslices);
     THNN_CHECK_DIM_SIZE(gradOutput, ndim, dimt, otime);
     THNN_CHECK_DIM_SIZE(gradOutput, ndim, dimh, oheight);
