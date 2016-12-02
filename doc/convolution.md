@@ -949,7 +949,7 @@ size `nOutputPlane`). The corresponding gradients can be found in
 ### VolumetricFullConvolution ###
 
 ```lua
-module = nn.VolumetricFullConvolution(nInputPlane, nOutputPlane, kT, kW, kH, [dT], [dW], [dH], [padT], [padW], [padH])
+module = nn.VolumetricFullConvolution(nInputPlane, nOutputPlane, kT, kW, kH, [dT], [dW], [dH], [padT], [padW], [padH], [adjT], [adjW], [adjH])
 ```
 
 Applies a 3D full convolution over an input image composed of several input planes. The `input` tensor in
@@ -970,13 +970,16 @@ The parameters are the following:
 * `padT`: The additional zeros added per depth to the input planes. Default is `0`, a good number is `(kT-1)/2`.
 * `padW`: The additional zeros added per width to the input planes. Default is `0`, a good number is `(kW-1)/2`.
 * `padH`: The additional zeros added per height to the input planes. Default is `0`, a good number is `(kH-1)/2`.
+* `adjT`: Extra depth to add to the output image. Default is `0`.  Cannot be greater than dT-1.
+* `adjW`: Extra width to add to the output image. Default is `0`. Cannot be greater than dW-1.
+* `adjH`: Extra height to add to the output image. Default is `0`. Cannot be greater than dH-1.
 
 If the input image is a 3D tensor `nInputPlane x depth x height x width`, the output image size
 will be `nOutputPlane x odepth x oheight x owidth` where
 ```lua
-odepth  = (depth  - 1) * dT - 2*padT + kT
-owidth  = (width  - 1) * dW - 2*padW + kW
-oheight = (height - 1) * dH - 2*padH + kH
+odepth  = (depth  - 1) * dT - 2*padT + kT + adjT
+owidth  = (width  - 1) * dW - 2*padW + kW + adjW
+oheight = (height - 1) * dH - 2*padH + kH + adjH
 ```
 
 <a name="nn.VolumetricDilatedConvolution"></a>
